@@ -58,7 +58,7 @@ class UserServiceTest {
         Mockito.when(userService.getUsers()).thenReturn(userList);
         Mockito.when(userService.getUsersOrderByDoj()).thenReturn(userList);
         Mockito.when(userService.saveUser(user1)).thenReturn(user1);
-//        Mockito.when(userService.deleteUserSoft(1L)).thenReturn(true);
+        Mockito.when(userService.deleteUserSoft(1L)).thenReturn(true);
     }
 
     @Test
@@ -95,7 +95,7 @@ class UserServiceTest {
 //    @Test
 //    void deleteUserHard() {
 //    }
-//
+
     @Test
     @DisplayName("Get Users based on Valid User FirstName")
     void whenValidUserFirstName_thenUserShouldFound() {
@@ -103,7 +103,7 @@ class UserServiceTest {
         List<User> usersByName = userService.getUsersByName(firstName);
         assertEquals(firstName, usersByName.get(0).getFirstName());
     }
-//
+
     @Test
     @DisplayName("Get Users based on Valid User PinCode")
     void getUsersByPinCode() {

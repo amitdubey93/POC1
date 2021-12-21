@@ -17,8 +17,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
@@ -31,6 +29,7 @@ class UserControllerTest {
 
     private User user;
     private List<User> userList;
+
     @BeforeEach
     void setUp() {
         user = User.builder()
@@ -44,6 +43,8 @@ class UserControllerTest {
                 .pinCode("100001")
                 .deleted(false)
                 .build();
+        userList = new ArrayList<>();
+        userList.add(user);
     }
 
     @Test
@@ -60,8 +61,6 @@ class UserControllerTest {
                 .deleted(false)
                 .build();
 
-        userList = new ArrayList<>();
-        userList.add(user);
         Mockito.when(userService.saveUser(inputUser))
                 .thenReturn(user);
 
@@ -69,26 +68,75 @@ class UserControllerTest {
                 .post("/api/user/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "                \"firstName\": \"amit1\",\n" +
-                        "                \"lastName\": \"dubey\",\n" +
-                        "                \"email\": \"amit@gmail.com\",\n" +
-                        "                \"dob\": \"2021-12-20\",\n" +
-                        "                \"doj\": \"2021-12-20\",\n" +
-                        "                \"city\": \"gurugram\",\n" +
-                        "                \"pinCode\": \"100001\",\n" +
-                        "                \"deleted\": false\n" +
-                        "        }"))
+                        "  \"city\": \"gurugram\",\n" +
+                        "  \"deleted\": false,\n" +
+                        "  \"dob\": \"2021-12-21\",\n" +
+                        "  \"doj\": \"2021-12-21\",\n" +
+                        "  \"email\": \"sumit@gmail.com\",\n" +
+                        "  \"firstName\": \"sumit\",\n" +
+                        "  \"lastName\": \"dubey\",\n" +
+                        "  \"pinCode\": \"100001\"\n" +
+                        "}"))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+//                .andExpect(MockMvcResultMatchers.content().json("{\n" +
+//                        "  \"id\": 1,\n" +
+//                        "  \"firstName\": \"sumit\",\n" +
+//                        "  \"lastName\": \"dubey\",\n" +
+//                        "  \"email\": \"sumit@gmail.com\",\n" +
+//                        "  \"dob\": \"2021-12-21\",\n" +
+//                        "  \"doj\": \"2021-12-21\",\n" +
+//                        "  \"city\": \"gurugram\",\n" +
+//                        "  \"pinCode\": \"100001\",\n" +
+//                        "  \"deleted\": false\n" +
+//                        "}"));
+    }
+
+    @Test
+    void updateUser() throws Exception {
+
+        User inputUser = User.builder()
+                .id(1L)
+                .firstName("amit1")
+                .lastName("dubey")
+                .city("gurugram")
+                .dob(LocalDate.of(2020,12,20))
+                .doj(LocalDate.of(2020,12,20))
+                .email("amit@gmail.com")
+                .pinCode("100001")
+                .deleted(false)
+                .build();
+
+        Mockito.when(userService.saveUser(inputUser))
+                .thenReturn(user);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/user/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "  \"id\": 1,\n" +
+                                "  \"city\": \"gurugram\",\n" +
+                                "  \"deleted\": false,\n" +
+                                "  \"dob\": \"2021-12-21\",\n" +
+                                "  \"doj\": \"2021-12-21\",\n" +
+                                "  \"email\": \"sumit@gmail.com\",\n" +
+                                "  \"firstName\": \"sumit\",\n" +
+                                "  \"lastName\": \"dubey\",\n" +
+                                "  \"pinCode\": \"100001\"\n" +
+                                "}"))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
-//    @Test
-//    void updateUser() {
-//    }
-//
-//    @Test
-//    void getUsers() {
-//    }
-//
+    @Test
+    void getUsers() throws Exception {
+        Mockito.when(userService.getUsers())
+                .thenReturn(userList);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
     @Test
     void getUsersByName() throws Exception {
         Mockito.when(userService.getUsersByName("amit1"))
@@ -99,14 +147,28 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
-//
-//    @Test
-//    void getUsersByPinCode() {
-//    }
-//
-//    @Test
-//    void getUsersOrderByDoj() {
-//    }
+
+    @Test
+    void getUsersByPinCode() throws Exception {
+        Mockito.when(userService.getUsersByPinCode("100001"))
+                .thenReturn(userList);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/pinCode/100001")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void getUsersOrderByDoj() throws Exception {
+        Mockito.when(userService.getUsersOrderByDoj())
+                .thenReturn(userList);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/orderByDoj/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 //
 //    @Test
 //    void deleteUserSoft() {
