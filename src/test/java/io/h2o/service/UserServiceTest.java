@@ -71,18 +71,19 @@ class UserServiceTest {
         assertEquals(1, usersByName.size());
     }
 
-
     @Test
     void deleteUserSoft() {
-        Mockito.when(userService.deleteUserSoft(1L)).thenReturn(true);
+//        Mockito.when(userService.deleteUserSoft(1L)).thenReturn(true);
         boolean b = userService.deleteUserSoft(1L);
         assertTrue(b);
-
     }
 
-//    @Test
-//    void deleteUserHard() {
-//    }
+    @Test
+    void deleteUserHard() {
+//        Mockito.when(userService.deleteUserHard(1L)).thenReturn(true);
+        boolean b = userService.deleteUserHard(1L);
+        assertTrue(b);
+    }
 
     @Test
     @DisplayName("Get Users based on Valid User FirstName")
@@ -94,8 +95,17 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Get Users based on Valid User PinCode")
-    void getUsersByPinCode() {
+    @DisplayName("Get null when Invalid User FirstName")
+    void whenInvalidUserFirstName_thenReturnNull() {
+        String firstName = "amit";
+        Mockito.when(userService.getUsersByName(firstName)).thenReturn(null);
+        List<User> usersByName = userService.getUsersByName(firstName);
+        assertNull(usersByName);
+    }
+
+    @Test
+    @DisplayName("Get Users when Valid User PinCode")
+    void whenValidPinCode_thenReturnUserList() {
         String pinCode = "100001";
         Mockito.when(userService.getUsersByPinCode(pinCode)).thenReturn(userList);
         List<User> usersByName = userService.getUsersByPinCode(pinCode);
@@ -103,8 +113,16 @@ class UserServiceTest {
     }
 
     @Test
-    void getUsersOrderByDoj() {
+    @DisplayName("Get null when Invalid User PinCode")
+    void whenInvalidPinCode_thenReturnNull() {
+        String pinCode = "10";
+        Mockito.when(userService.getUsersByPinCode(pinCode)).thenReturn(null);
+        List<User> usersByName = userService.getUsersByPinCode(pinCode);
+        assertNull(usersByName);
+    }
 
+    @Test
+    void getUsersOrderByDoj() {
         Mockito.when(userService.getUsersOrderByDoj()).thenReturn(userList);
         List<User> usersByName = userService.getUsersOrderByDoj();
         assertEquals(1, usersByName.size());

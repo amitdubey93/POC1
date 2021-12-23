@@ -2,7 +2,7 @@ package io.h2o.controller;
 
 
 import io.h2o.domain.User;
-import io.h2o.exception.UserNotFoundException;
+//import io.h2o.exception.UserNotFoundException;
 import io.h2o.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

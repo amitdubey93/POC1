@@ -1,7 +1,6 @@
 package io.h2o.service.impl;
 
 import io.h2o.domain.User;
-import io.h2o.exception.UserNotFoundException;
 import io.h2o.repository.UserRepository;
 import io.h2o.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
