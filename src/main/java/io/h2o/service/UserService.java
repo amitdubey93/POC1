@@ -1,6 +1,7 @@
 package io.h2o.service;
 
 import io.h2o.domain.User;
+import io.h2o.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -14,7 +15,7 @@ public interface UserService {
 
     boolean deleteUserSoft(Long id);
 
-    void deleteUserHard(Long id);
+    boolean deleteUserHard(Long id);
 
     List<User> getUsersByName(String name);
     List<User> getUsersByPinCode(String pinCode);

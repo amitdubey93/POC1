@@ -55,7 +55,7 @@ public class User {
     @Column(name = "pin_code", nullable = false)
     private String pinCode;
 
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
-    private boolean deleted;
+    @Column(name = "enabled", nullable = false, columnDefinition = "boolean default true")
+    private boolean enabled;
 
 }

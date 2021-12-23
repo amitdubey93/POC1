@@ -25,9 +25,11 @@ class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
 
+    private List<User> userList;
+
     @BeforeEach
     void setUp() {
-        User user1 = User.builder()
+        User user = User.builder()
                 .id(1L)
                 .firstName("amit1")
                 .lastName("dubey")
@@ -36,29 +38,11 @@ class UserServiceTest {
                 .doj(LocalDate.of(2020,12,20))
                 .email("amit@gmail.com")
                 .pinCode("100001")
-                .deleted(false)
+                .enabled(true)
                 .build();
-//        User user2 = User.builder()
-//                .id(2L)
-//                .firstName("amit2")
-//                .lastName("dubey")
-//                .city("gurugram")
-//                .dob(LocalDate.of(2020,12,19))
-//                .doj(LocalDate.of(2020,12,19))
-//                .email("amit1@gmail.com")
-//                .pinCode("100001")
-//                .deleted(false)
-//                .build();
+        userList = new ArrayList<>();
+        userList.add(user);
 
-        List<User> userList = new ArrayList<>();
-        userList.add(user1);
-//        userList.add(user2);
-        Mockito.when(userService.getUsersByName("amit1")).thenReturn(userList);
-        Mockito.when(userService.getUsersByPinCode("100001")).thenReturn(userList);
-        Mockito.when(userService.getUsers()).thenReturn(userList);
-        Mockito.when(userService.getUsersOrderByDoj()).thenReturn(userList);
-        Mockito.when(userService.saveUser(user1)).thenReturn(user1);
-        Mockito.when(userService.deleteUserSoft(1L)).thenReturn(true);
     }
 
     @Test
@@ -72,8 +56,9 @@ class UserServiceTest {
                 .doj(LocalDate.of(2020,12,20))
                 .email("amit@gmail.com")
                 .pinCode("100001")
-                .deleted(false)
+                .enabled(false)
                 .build();
+        Mockito.when(userService.saveUser(user)).thenReturn(user);
         User savedUser = userService.saveUser(user);
         assertNotNull(savedUser);
         assertEquals(user.getFirstName(),savedUser.getFirstName());
@@ -81,16 +66,19 @@ class UserServiceTest {
 
     @Test
     void getUsers() {
+        Mockito.when(userService.getUsers()).thenReturn(userList);
         List<User> usersByName = userService.getUsers();
         assertEquals(1, usersByName.size());
     }
 
 
-//    @Test
-//    void deleteUserSoft() {
-//        boolean b = userService.deleteUserSoft(1L);
-//        assertTrue(b);
-//    }
+    @Test
+    void deleteUserSoft() {
+        Mockito.when(userService.deleteUserSoft(1L)).thenReturn(true);
+        boolean b = userService.deleteUserSoft(1L);
+        assertTrue(b);
+
+    }
 
 //    @Test
 //    void deleteUserHard() {
@@ -100,6 +88,7 @@ class UserServiceTest {
     @DisplayName("Get Users based on Valid User FirstName")
     void whenValidUserFirstName_thenUserShouldFound() {
         String firstName = "amit1";
+        Mockito.when(userService.getUsersByName(firstName)).thenReturn(userList);
         List<User> usersByName = userService.getUsersByName(firstName);
         assertEquals(firstName, usersByName.get(0).getFirstName());
     }
@@ -108,12 +97,15 @@ class UserServiceTest {
     @DisplayName("Get Users based on Valid User PinCode")
     void getUsersByPinCode() {
         String pinCode = "100001";
+        Mockito.when(userService.getUsersByPinCode(pinCode)).thenReturn(userList);
         List<User> usersByName = userService.getUsersByPinCode(pinCode);
         assertEquals(pinCode, usersByName.get(0).getPinCode());
     }
 
     @Test
     void getUsersOrderByDoj() {
+
+        Mockito.when(userService.getUsersOrderByDoj()).thenReturn(userList);
         List<User> usersByName = userService.getUsersOrderByDoj();
         assertEquals(1, usersByName.size());
     }

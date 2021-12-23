@@ -11,19 +11,19 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("from User where deleted = 0")
+    @Query("from User where enabled = true")
     List<User> getAll();
 
-    @Query("from User where deleted = 0 and firstName = ?1")
+    @Query("from User where enabled = true and firstName = ?1")
     List<User> findByFirstName(String name);
 
-    @Query("from User where deleted = 0 and pinCode = ?1")
+    @Query("from User where enabled = true and pinCode = ?1")
     List<User> findByPinCode(String pinCode);
 
-    @Query("from User where deleted = 0 order by doj desc")
+    @Query("from User where enabled = true order by doj desc")
     List<User> getUsersOrderByDoj();
 
     @Modifying
-    @Query("update User set deleted = 1 where id = ?1")
+    @Query("update User set enabled = false where id = ?1")
     int deleteUserSoft(Long id);
 }

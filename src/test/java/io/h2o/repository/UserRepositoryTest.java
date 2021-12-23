@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class UserRepositoryTest {
@@ -33,7 +33,7 @@ class UserRepositoryTest {
                 .doj(LocalDate.of(2020,12,20))
                 .email("amit@gmail.com")
                 .pinCode("100001")
-                .deleted(false)
+                .enabled(true)
                 .build();
 
         testEntityManager.persist(user);
@@ -50,11 +50,29 @@ class UserRepositoryTest {
                 .doj(LocalDate.of(2020,12,20))
                 .email("amit@gmail.com")
                 .pinCode("100001")
-                .deleted(false)
+                .enabled(true)
                 .build();
         User savedUser = userRepository.save(user);
         assertNotNull(savedUser);
         assertEquals(user.getFirstName(),savedUser.getFirstName());
+    }
+
+    @Test
+    void whenValidUser_thenSoftDeleteUser(){
+        int i = userRepository.deleteUserSoft(1L);
+        assertEquals(1,i);
+//        Optional<User> user = userRepository.findById(1L);
+//        System.err.println(user);
+//        assertFalse(user.get().isEnabled());
+    }
+
+    @Test
+    void whenValidUser_thenHardDeleteUser(){
+        Optional<User> user = userRepository.findById(1L);
+        assertTrue(user.isPresent());
+        userRepository.delete(user.get());
+        Optional<User> user1 = userRepository.findById(1L);
+        assertFalse(user1.isPresent());
     }
 
     @Test

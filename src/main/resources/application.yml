@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://localhost:3306/poc1?useSSL=false
+    url: jdbc:mysql://localhost:3306/poc1?allowPublicKeyRetrieval=true&useSSL=false
     password: '123456789'
   jpa:
     show-sql: 'true'

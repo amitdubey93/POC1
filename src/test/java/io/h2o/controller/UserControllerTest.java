@@ -41,7 +41,7 @@ class UserControllerTest {
                 .doj(LocalDate.of(2020,12,20))
                 .email("amit@gmail.com")
                 .pinCode("100001")
-                .deleted(false)
+                .enabled(true)
                 .build();
         userList = new ArrayList<>();
         userList.add(user);
@@ -58,7 +58,7 @@ class UserControllerTest {
                 .doj(LocalDate.of(2020,12,20))
                 .email("amit@gmail.com")
                 .pinCode("100001")
-                .deleted(false)
+                .enabled(true)
                 .build();
 
         Mockito.when(userService.saveUser(inputUser))
@@ -69,7 +69,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "  \"city\": \"gurugram\",\n" +
-                        "  \"deleted\": false,\n" +
+                        "  \"enabled\": true,\n" +
                         "  \"dob\": \"2021-12-21\",\n" +
                         "  \"doj\": \"2021-12-21\",\n" +
                         "  \"email\": \"sumit@gmail.com\",\n" +
@@ -87,7 +87,7 @@ class UserControllerTest {
 //                        "  \"doj\": \"2021-12-21\",\n" +
 //                        "  \"city\": \"gurugram\",\n" +
 //                        "  \"pinCode\": \"100001\",\n" +
-//                        "  \"deleted\": false\n" +
+//                        "  \"enabled\": true\n" +
 //                        "}"));
     }
 
@@ -103,7 +103,7 @@ class UserControllerTest {
                 .doj(LocalDate.of(2020,12,20))
                 .email("amit@gmail.com")
                 .pinCode("100001")
-                .deleted(false)
+                .enabled(true)
                 .build();
 
         Mockito.when(userService.saveUser(inputUser))
@@ -115,7 +115,7 @@ class UserControllerTest {
                         .content("{\n" +
                                 "  \"id\": 1,\n" +
                                 "  \"city\": \"gurugram\",\n" +
-                                "  \"deleted\": false,\n" +
+                                "  \"enabled\": true,\n" +
                                 "  \"dob\": \"2021-12-21\",\n" +
                                 "  \"doj\": \"2021-12-21\",\n" +
                                 "  \"email\": \"sumit@gmail.com\",\n" +
@@ -169,12 +169,47 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
-//
-//    @Test
-//    void deleteUserSoft() {
-//    }
-//
-//    @Test
-//    void deleteUserHard() {
-//    }
+
+    @Test
+    void whenValidUser_thenDeleteUserSoftOk() throws Exception {
+        Mockito.when(userService.deleteUserSoft(1L))
+                .thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/user/soft/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void whenInvalidUser_thenDeleteUserSoftNotFound() throws Exception {
+        Mockito.when(userService.deleteUserSoft(10L))
+                .thenReturn(false);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/user/soft/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    void whenValidUser_thenDeleteUserHardOk() throws Exception {
+        Mockito.when(userService.deleteUserHard(1L))
+                .thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/user/hard/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    void whenInvalidUser_thenDeleteUserHardNotFound() throws Exception {
+        Mockito.when(userService.deleteUserHard(10L))
+                .thenReturn(false);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/user/hard/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
 }
